@@ -1,5 +1,5 @@
-- name: Install user component
-  hosts: user
+- name: Install cart component
+  hosts: cart
   become: yes
   tasks:
   - name: setup NPM source
@@ -36,14 +36,14 @@
       path: /app
       state: directory
 
-  - name: download user artifact
+  - name: download cart artifact
     ansible.builtin.get_url:
-      url: https://roboshop-builds.s3.amazonaws.com/user.zip
+      url: https://roboshop-builds.s3.amazonaws.com/cart.zip
       dest: /tmp
 
-  - name: extract user artifact
+  - name: extract cart artifact
     ansible.builtin.unarchive:
-      src: /tmp/user.zip
+      src: /tmp/cart.zip
       dest: /app
       remote_src: yes
 
@@ -52,30 +52,17 @@
     args:
       chdir: /app
 
-  - name: copy user service
+  - name: copy cart service
     ansible.builtin.copy:
-      src: user.service
-      dest: /etc/systemd/system/user.service
+      src: cart.service
+      dest: /etc/systemd/system/cart.service
 
   - name: deamon reload
     ansible.builtin.systemd:
       daemon_reload: true
 
-  - name: copy mongo repo to yum.repos.d
-    ansible.builtin.copy:
-      src: mongodb.repo
-      dest: /etc/yum.repos.d/mongo.repo
-
-  - name: Install MongoDB
-    ansible.builtin.yum:
-      name: mongodb-org-shell
-      state: installed
-
-  - name: load user data
-    ansible.builtin.command: mongo --host mongodb.devopscollab.tech < /app/schema/user.js
-
-  - name: restart user
+  - name: restart cart
     ansible.builtin.service:
-      name: user
+      name: cart
       state: restarted
       enabled: true
