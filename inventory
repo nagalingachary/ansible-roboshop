@@ -21,3 +21,9 @@ mysql.devopscollab.tech
 
 [shipping]
 shipping.devopscollab.tech
+
+[rabbitmq]
+rabbitmq.devopscollab.tech
+
+[payment]
+payment.devopscollab.tech
